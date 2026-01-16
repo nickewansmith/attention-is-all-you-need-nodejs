@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformer Streaming Visualizer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="card controls">
+        <h1>Transformer Streaming Visualizer</h1>
+        <p>
+          Point this page at a running Nest server and watch greedy tokens or beam hypotheses arrive in real time.
+          The form below builds the <code>/transformer/translate/stream</code> query string for you and wires up an
+          <code>EventSource</code> under the hood.
+        </p>
+        <form id="stream-form">
+          <label class="field">
+            <span>Text to translate</span>
+            <textarea name="text" id="text" rows="4" required placeholder="attention is all you need"></textarea>
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span>Strategy</span>
+              <select name="strategy" id="strategy">
+                <option value="greedy">Greedy</option>
+                <option value="beam">Beam</option>
+              </select>
+            </label>
+            <label class="field" id="beam-width-field">
+              <span>Beam width</span>
+              <input type="number" min="2" max="10" step="1" value="4" name="beamWidth" />
+            </label>
+            <label class="field">
+              <span>Max length</span>
+              <input type="number" min="4" max="256" step="1" value="64" name="maxLength" />
+            </label>
+            <label class="field" id="beam-throttle-field">
+              <span>Beam throttle (ms)</span>
+              <input type="number" min="0" max="5000" step="50" value="0" name="beamThrottleMs" />
+              <small>Skips intermediate beam snapshots to reduce SSE volume.</small>
+            </label>
+          </div>
+          <label class="checkbox">
+            <input type="checkbox" name="includeAttention" id="includeAttention" />
+            <span>Include attention snapshots (greedy only during streaming)</span>
+          </label>
+          <label class="field">
+            <span>API base URL</span>
+            <input
+              type="url"
+              id="apiBase"
+              placeholder="http://localhost:3000"
+              value=""
+              autocomplete="off"
+            />
+            <small>Leave blank to use the same origin that hosts this page.</small>
+          </label>
+          <div class="actions">
+            <button type="submit">Start stream</button>
+            <button type="button" id="stop-button" class="secondary">Stop</button>
+          </div>
+        </form>
+      </section>
+      <section class="card output">
+        <div class="status-line">
+          <div>
+            <h2>Connection</h2>
+            <div id="connection-status" class="status-badge offline">Idle</div>
+          </div>
+          <div class="pill-group">
+            <span class="pill" id="mode-pill">—</span>
+            <span class="pill" id="attention-pill">Attention: off</span>
+            <span class="pill" id="throttle-pill">Throttle: off</span>
+          </div>
+        </div>
+        <div class="grid">
+          <article>
+            <h3>Greedy token stream</h3>
+            <div id="greedy-log" class="log"></div>
+          </article>
+          <article>
+            <h3>Beam candidates</h3>
+            <div class="chart-wrapper">
+              <canvas id="beam-chart" height="220"></canvas>
+              <div id="beam-chart-empty">Start a beam stream to see score trends.</div>
+            </div>
+            <div id="beam-legend" class="legend"></div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Score</th>
+                  <th>Tokens</th>
+                </tr>
+              </thead>
+              <tbody id="beam-table"></tbody>
+            </table>
+            <div id="beam-history" class="log"></div>
+          </article>
+        </div>
+        <article>
+          <h3>Final result</h3>
+          <div id="final-translation" class="final"></div>
+          <pre id="attention-dump" class="attention-dump"></pre>
+        </article>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
