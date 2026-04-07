@@ -1,6 +1,6 @@
 # Attention Is All You Need — NestJS Edition
 
-NestJS/TensorFlow.js implementation of the Transformer architecture described in *Attention Is All You Need*. The project aims to be a serious starting point for Node.js researchers building custom translation or sequence models with modern tooling (checkpoints, observability, CLI, Docker, CI, etc.).
+A NestJS/TensorFlow.js implementation of the Transformer architecture described in *Attention Is All You Need*. The project aims to be a serious starting point for Node.js researchers building custom translation or sequence models with modern tooling (checkpoints, observability, CLI, Docker, CI, etc.).
 
 > **IMPORTANT**: This repository is for **educational purposes only**. It is a **work in progress (WIP)** and has **not been fully tested**. Use it to learn about the *Attention Is All You Need* design and adapt it cautiously for production workloads.
 
